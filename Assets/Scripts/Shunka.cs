@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Shunka : MonoBehaviour {
-
+	Game gameRef;
 	// Use this for initialization
 	void Start () {
-		
+		gameRef = Camera.main.GetComponent<Game> ();
 	}
 	
 	// Update is called once per frame
@@ -17,8 +17,8 @@ public class Shunka : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D col) {
 		//print (col.gameObject.name);
 		if (col.gameObject.tag == "celeb") {
-			Game.ToggleMoving();
-			Game.ShowQuestion (true);	
+			Game.ShowQuestion (false);	
+			gameRef.SetQuestion ();
 		}
 
 	}

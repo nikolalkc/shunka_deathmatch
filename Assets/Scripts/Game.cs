@@ -9,13 +9,13 @@ public class Game : MonoBehaviour {
 	void Update() {
 
 		if (Input.GetKeyDown (KeyCode.C)) {
-			ToggleMoving ();
+			ToggleMoving (true);
 		}
 	}
 	#endregion
 	#region Init
 	public GameObject gStats,gDialogWindow;
-	public static GameObject question;
+	public static GameObject question,currentCeleb;
 	public Text Score, Health;
 	public Button[] button;
 	public Image image_slot;
@@ -70,14 +70,16 @@ public class Game : MonoBehaviour {
 
 	#region Answer
 	public bool CheckAnswer(int button_idx) {
+		currentCeleb.GetComponent<BoxCollider2D> ().enabled = false;
 		ShowQuestion (false);
-		ToggleMoving ();
 		if (button_idx == idx_for_correct_button) {
 		//	print ("To je tačan odgovor!");
 			score +=10;
+			currentCeleb.GetComponent<MoveLeft> ().velocity *= 5;
 		} else {
 			//print ("GREŠKA");
 			health--;
+			currentCeleb.GetComponent<MoveLeft> ().velocity *= -9;
 		}
 
 		UpdateScore ();
@@ -118,8 +120,8 @@ public class Game : MonoBehaviour {
 	#endregion
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	public static void ToggleMoving(){
-		if (Time.timeScale == 1) {
+	public static void ToggleMoving(bool status){
+		if (status == false) {
 			MoveLeft._velocity = 0;
 			Time.timeScale = 0;	
 		} else {
@@ -128,11 +130,13 @@ public class Game : MonoBehaviour {
 		}
 	}
 	void DieAndShowStats() {
+		ToggleMoving (false);
 		gDialogWindow.SetActive (false);
 		gStats.SetActive (true);
 	}
 
 	public void RestartGame() {
+		ToggleMoving (true);
 		gDialogWindow.SetActive (false);
 		gStats.SetActive (false);
 
