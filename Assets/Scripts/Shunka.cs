@@ -17,8 +17,12 @@ public class Shunka : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D col) {
 		//print (col.gameObject.name);
 		if (col.gameObject.tag == "celeb") {
-			Game.ShowQuestion (false);	
-			gameRef.SetQuestion ();
+			if (col.gameObject.GetComponent<Celeb>().isActive) {
+				Game.ShowQuestion (false);		
+				gameRef.SetQuestion ();
+			}
+
+
 		}
 
 	}

@@ -70,7 +70,7 @@ public class Game : MonoBehaviour {
 
 	#region Answer
 	public bool CheckAnswer(int button_idx) {
-		currentCeleb.GetComponent<BoxCollider2D> ().enabled = false;
+		currentCeleb.GetComponent<Celeb> ().isActive = false;
 		ShowQuestion (false);
 		if (button_idx == idx_for_correct_button) {
 		//	print ("To je tačan odgovor!");
