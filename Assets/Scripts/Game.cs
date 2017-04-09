@@ -9,23 +9,13 @@ public class Game : MonoBehaviour {
 	void Update() {
 
 		if (Input.GetKeyDown (KeyCode.C)) {
-			//SetQuestion ();
-			//print(TakeRandomFromImagePool(ImagePool));
-
-
-			if (Time.timeScale == 1) {
-				MoveLeft._velocity = 0;
-				Time.timeScale = 0;	
-			} else {
-				MoveLeft._velocity = -0.0314f;
-				Time.timeScale = 1;
-			}
-
+			ToggleMoving ();
 		}
 	}
 	#endregion
 	#region Init
 	public GameObject gStats,gDialogWindow;
+	public static GameObject question;
 	public Text Score, Health;
 	public Button[] button;
 	public Image image_slot;
@@ -39,16 +29,16 @@ public class Game : MonoBehaviour {
 
 
 	void Start () {
+		question = gDialogWindow;
 		celebrity_images =  Resources.LoadAll<Sprite>("Art");
 		RestartGame ();
 		CreateProp ();
-		CreateCeleb ();
 	}
 	#endregion
 
 	#region SetQuestion
 		public void SetQuestion() {
-			
+		
 			//izaberi na koje dugme ce se ispisati tačan odgovor
 			idx_for_correct_button = Random.Range (0, 3);																
 
@@ -58,7 +48,12 @@ public class Game : MonoBehaviour {
 
 			//ispisi tacan odgovor na odgovarajuce dugme
 			Text bt_text = button [idx_for_correct_button].GetComponentInChildren<Text> ();
-			bt_text.text = "**" + celebrity_images [celeb_idx].name.Substring (3)  + "**";
+			bt_text.text = celebrity_images [celeb_idx].name.Substring (3);
+
+
+			//napravi celeb instance
+			string type = celebrity_images [celeb_idx].name.Substring (0,2);
+			CreateCeleb (type);
 
 			//oduzmi izabranu licnost iz names pool-a da ne bi upalo na dva dugmeta isto ime
 			NamesPool.Remove(celebrity_images [celeb_idx].name);
@@ -75,9 +70,11 @@ public class Game : MonoBehaviour {
 
 	#region Answer
 	public bool CheckAnswer(int button_idx) {
+		ShowQuestion (false);
+		ToggleMoving ();
 		if (button_idx == idx_for_correct_button) {
 		//	print ("To je tačan odgovor!");
-			score++;
+			score +=10;
 		} else {
 			//print ("GREŠKA");
 			health--;
@@ -108,7 +105,12 @@ public class Game : MonoBehaviour {
 	}
 
 	void UpdateHealth() {
-		Health.text = "Health:" + health.ToString();
+		string h = "<";
+		for (int i = 0; i < health; i++) {
+			h += "3";
+		}
+		Health.text = h;
+			
 		if (health <= 0) {
 			DieAndShowStats ();
 		}
@@ -116,14 +118,22 @@ public class Game : MonoBehaviour {
 	#endregion
 	///////////////////////////////////////////////////////////////////////////////////////
 
-
+	public static void ToggleMoving(){
+		if (Time.timeScale == 1) {
+			MoveLeft._velocity = 0;
+			Time.timeScale = 0;	
+		} else {
+			MoveLeft._velocity = -0.0314f;
+			Time.timeScale = 1;
+		}
+	}
 	void DieAndShowStats() {
 		gDialogWindow.SetActive (false);
 		gStats.SetActive (true);
 	}
 
 	public void RestartGame() {
-		gDialogWindow.SetActive (true);
+		gDialogWindow.SetActive (false);
 		gStats.SetActive (false);
 
 		health = 3;
@@ -189,17 +199,35 @@ public class Game : MonoBehaviour {
 	void CreateProp(){
 		Instantiate (propPrefab, propSpawn.position, Quaternion.identity);
 
-		float time = Random.Range (2f, 7f);
+		float time = Random.Range (1f, 5f);
 		Invoke ("CreateProp", time);
 	}
 
-	void CreateCeleb(){
-		Instantiate (celebPrefab, celebSpawn.position, Quaternion.identity);
+	void CreateCeleb(string type){
+		GameObject g = Instantiate (celebPrefab, celebSpawn.position, Quaternion.identity) as GameObject;
+		Celeb instance = g.GetComponent<Celeb> ();
+		if (type == "fb") {
+			instance.SetImage (0);
+		}
+		if (type == "fw") {
+			instance.SetImage (1);
+		}
+		if (type == "mb") {
+			instance.SetImage (2);
+		}
+		if (type == "mw") {
+			instance.SetImage (3);
+		}
 
 		float time = Random.Range (2f, 7f);
-		Invoke ("CreateCeleb", time);
+		//Invoke ("CreateCeleb", time);
 	}
 
+	public static void ShowQuestion(bool status) {
+		if (question != null) {
+			question.SetActive (status);
+		}
+	}
 
 
 }
