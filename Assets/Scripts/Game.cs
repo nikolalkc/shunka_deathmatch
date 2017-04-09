@@ -14,7 +14,7 @@ public class Game : MonoBehaviour {
 	}
 	#endregion
 	#region Init
-	public GameObject gStats,gDialogWindow;
+	public GameObject gStats,gDialogWindow,music;
 	public static GameObject question,currentCeleb;
 	public Text Score, Health;
 	public Button[] button;
@@ -29,6 +29,7 @@ public class Game : MonoBehaviour {
 
 
 	void Start () {
+		Instantiate (music);
 		question = gDialogWindow;
 		celebrity_images =  Resources.LoadAll<Sprite>("Art");
 		RestartGame ();
@@ -114,6 +115,7 @@ public class Game : MonoBehaviour {
 		Health.text = h;
 			
 		if (health <= 0) {
+			Health.text = "";
 			DieAndShowStats ();
 		}
 	}

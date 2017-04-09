@@ -6,8 +6,12 @@ public class ShowQuestion : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D col) {
 		if (col.gameObject.tag == "celeb") {
-			Game.currentCeleb = col.gameObject;
-			Game.ShowQuestion (true);
+			if (col.gameObject.GetComponent<Celeb>().isActive) {
+				Game.currentCeleb = col.gameObject;	
+				Game.ShowQuestion (true);
+			}
+
+
 		}
 
 	}
