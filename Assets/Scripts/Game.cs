@@ -32,8 +32,8 @@ public class Game : MonoBehaviour {
 	public GameObject floor,shunka;
 	Animator floorAnimator,shunkaAnimator;
 	public int xp_treshold = 5;
-	public int current_xp = 0;
-	public float level_factor = 1.2f;
+	int current_xp = 0;
+	public float level_factor = 1.1f;
 
 	void Start () {
 		floorAnimator = floor.GetComponent<Animator> ();
@@ -67,7 +67,7 @@ public class Game : MonoBehaviour {
 			CreateCeleb (type);
 
 			//oduzmi izabranu licnost iz names pool-a da ne bi upalo na dva dugmeta isto ime
-			NamesPool.Remove(celebrity_images [celeb_idx].name);
+			NamesPool.Remove(celebrity_images [celeb_idx].name.Substring (3));
 
 
 			//ispisi netacne odgovore
@@ -85,7 +85,7 @@ public class Game : MonoBehaviour {
 		ShowQuestion (false);
 		if (button_idx == idx_for_correct_button) {
 		//	print ("To je tačan odgovor!");
-			score +=10;
+			score += Mathf.RoundToInt (10*levelSpeed);
 			currentCeleb.GetComponent<MoveLeft> ().velocity *= 5;
 			CheckLevel ();
 		} else {
