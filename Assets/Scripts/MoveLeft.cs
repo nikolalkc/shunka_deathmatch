@@ -14,7 +14,7 @@ public class MoveLeft : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Time.timeScale > 0) {
-			transform.Translate (new Vector3 (velocity, 0, 0));	
+			transform.Translate (new Vector3 (velocity * Game.levelSpeed, 0, 0));	
 		}
 
 	}

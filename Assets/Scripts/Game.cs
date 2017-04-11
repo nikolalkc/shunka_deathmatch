@@ -9,11 +9,14 @@ public class Game : MonoBehaviour {
 	void Update() {
 
 		if (Input.GetKeyDown (KeyCode.C)) {
-			ToggleMoving (true);
+			//ToggleMoving (true);
+			ChangeLevelSpeed(1.1f);
 		}
 	}
 	#endregion
 	#region Init
+	
+	public static float levelSpeed = 1f;
 	public GameObject gStats,gDialogWindow,music;
 	public static GameObject question,currentCeleb;
 	public Text Score, Health;
@@ -26,9 +29,16 @@ public class Game : MonoBehaviour {
 	public Transform propSpawn,celebSpawn;
 	public GameObject propPrefab,celebPrefab;
 	public static float __velocity = -0.0314f;
-
+	public GameObject floor,shunka;
+	Animator floorAnimator,shunkaAnimator;
+	public int xp_treshold = 5;
+	public int current_xp = 0;
+	public float level_factor = 1.2f;
 
 	void Start () {
+		floorAnimator = floor.GetComponent<Animator> ();
+		shunkaAnimator = shunka.GetComponent<Animator> ();
+
 		Instantiate (music);
 		question = gDialogWindow;
 		celebrity_images =  Resources.LoadAll<Sprite>("Art");
@@ -77,6 +87,7 @@ public class Game : MonoBehaviour {
 		//	print ("To je tačan odgovor!");
 			score +=10;
 			currentCeleb.GetComponent<MoveLeft> ().velocity *= 5;
+			CheckLevel ();
 		} else {
 			//print ("GREŠKA");
 			health--;
@@ -138,6 +149,9 @@ public class Game : MonoBehaviour {
 	}
 
 	public void RestartGame() {
+		levelSpeed = 1f;
+		ChangeLevelSpeed (1f);
+
 		ToggleMoving (true);
 		gDialogWindow.SetActive (false);
 		gStats.SetActive (false);
@@ -233,6 +247,21 @@ public class Game : MonoBehaviour {
 		if (question != null) {
 			question.SetActive (status);
 		}
+	}
+
+	public void ChangeLevelSpeed(float factor) {
+		levelSpeed *= factor;
+		floorAnimator.speed = levelSpeed;
+		shunkaAnimator.speed = levelSpeed;
+	}
+
+	public void CheckLevel() {
+		current_xp ++ ;
+		if (current_xp % xp_treshold == 0) {
+			//print ("JESTE");
+			ChangeLevelSpeed (level_factor);
+		}
+
 	}
 
 
